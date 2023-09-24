@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Modal, Form, Input, Radio, Select, DatePicker, Upload,Button, message  } from "antd";
 import { UploadOutlined } from '@ant-design/icons';
 import axios from "axios";
@@ -6,35 +6,32 @@ import axios from "axios";
 const CreateForm = (props) => {
   const { visible, setVisible, onCreate } = props;
   const [form] = Form.useForm();
+  const [date1, setDate] = useState();
 
 
   const handleCreate = async () => {
     try {
       // Validate the form fields
       const values = await form.validateFields();
-      console.log(values, "FFFFFFFFFFFFFFFF");
   
       // Extract the necessary data from the form values
-      const { name,nic,address,mobile,email,jbcategory,country,exceptedsalary,remark,date,time,file } = values;
+      const { name,email,nic,mobile,address,time,role } = values;
       const formObj = {
-    firstname: name,
-    nic: nic,
-    address: address,
-    mobile: mobile,
+    name: name,
     email:email,
-    occupation:jbcategory,
-    exceptedcountry: country,
-    exceptedsalary: exceptedsalary,
-    remark:remark,
-    date: date,
+    role:role,
+    nic: nic,
+    mobile: mobile,
+    username: address,
+    date: date1,
     time: time,
     status: 0,
-    file: file
+    
       };
   
       // Make the POST request using Axios
       const response = await axios.post(
-        'http://localhost:8887/seeker/detail/add',
+        'http://localhost:8887/jobseekers/',
         formObj
       );
   
@@ -79,7 +76,7 @@ const CreateForm = (props) => {
       onOk={handleCreate}
     >
       <Form form={form} layout="vertical">
-        <Form.Item label="Job Category" name="jbcategory">
+        <Form.Item label="Excepted job" name="role">
           <Select
             defaultValue="softengineer"
             //   onChange={handleChange}
@@ -100,63 +97,39 @@ const CreateForm = (props) => {
           />
         </Form.Item>
 
-        <Form.Item label="Upload a CV" name="cv">
-          <Upload {...filecv}>
-            <Button icon={<UploadOutlined />}>Click to Upload</Button>
-          </Upload>
-        </Form.Item>
+       
+       
         <Form.Item label="Full Name" name="name" >
           <Input />
         </Form.Item>
+        
         <Form.Item label="Email" name="email">
           <Input />
         </Form.Item>
+
         <Form.Item label="Nic" name="nic">
           <Input />
         </Form.Item>
-        <Form.Item label="Address" name="address">
-          <Input />
-          </Form.Item>
+
         <Form.Item label="Contact" name="mobile">
           <Input />
-        </Form.Item>
-        <Form.Item label="Excepted Salary" name="exceptedsalary">
-          <Input />
-        </Form.Item>
-        <Form.Item label="Excepted Country" name="country">
-          <Select
-            defaultValue="uk"
-            //   onChange={handleChange}
-            options={[
-              {
-                value: "uk",
-                label: "United Kingdom",
-              },
-              {
-                value: "newzealand",
-                label: "New Zealand",
-              },
-              {
-                value: "australia",
-                label: "Australia",
-              },
-            ]}
-          />
-        </Form.Item>
+          </Form.Item>
 
-        <Form.Item label="Remark" name="remark">
+        <Form.Item label="Address" name="usename">
           <Input />
-        </Form.Item>
-        
-        <Form.Item label="Schedule Date" name="date">
-          <DatePicker  format="YYYY-MM-DD HH:ss"
-          //   onChange={onChange}
+          </Form.Item>
+       
+          <Form.Item label="Schedule Date" name="date">
+          <DatePicker  format={"YYYY-MM-DD"}
+                        onChange={(d, dString) => {
+                          setDate(dString);
+                        }}
           />
         </Form.Item>
         
         <Form.Item label="Time" name="time">
           <Select
-            defaultValue="morning"
+           
             //   onChange={handleChange}
             options={[
               {
@@ -164,23 +137,21 @@ const CreateForm = (props) => {
                 label: "Morning",
               },
               {
-                value: "afternoon",
-                label: "Afternoon",
-              },
-              {
                 value: "evening",
                 label: "Evening",
+              },
+              {
+                value: "afternoon",
+                label: "Afternoon",
               },
             ]}
           />
         </Form.Item>
-        {/* <Form.Item name="time" label="Time">
-          <Radio.Group>
-            <Radio value="morning">Morning</Radio>
-            <Radio value="afternoon">Afternoon</Radio>
-            <Radio value="evening">Evening</Radio>
-          </Radio.Group>
-        </Form.Item> */}
+
+       
+        
+        
+
       </Form>
     </Modal>
   );
